@@ -15,29 +15,47 @@ import java.util.Optional;
 public class ServicoService {
 
     @Autowired
-    private ServicoDao servicoDao;
+    ServicoDao servicoDao;
 
     public Optional<Servico> buscarServico (Long id) {
         return servicoDao.findById(id);
     }
 
-    public List<Servico> buscarServicos (ServicoDTO ServicoDTO) {
+    public List<Servico> buscarServicos () {
         return servicoDao.findAll();
     }
 
-    public Servico salvar (ServicoDTO ServicoDTO) {
-        return servicoDao.save(ServicoMapper.instance.ServicoDtoToServico(ServicoDTO));
+    public Servico salvar (ServicoDTO servicoDTO) {
+        return servicoDao.save(ServicoMapper.instance.servicoDtoToServico(servicoDTO));
     }
 
-    public void deletar (ServicoDTO ServicoDTO) {
-        buscarDescricao(ServicoDTO).stream().forEach(prod -> servicoDao.delete(prod));
+    public void deletar (Long id) {
+        servicoDao.deleteById(id);
     }
 
-    public List<Servico> buscarDescricao (ServicoDTO ServicoDTO) {
-        return servicoDao.findByDescricao(ServicoDTO.getDescricao());
+    public List<Servico> buscarDescricao (ServicoDTO servicoDTO) {
+        return servicoDao.findByDescricao(servicoDTO.getDescricao());
+
     }
 
-    public Servico atualizar (ServicoDTO ServicoDTO) {
-        return null;
+    public ServicoDTO atualizar (ServicoDTO servicoDTO, Long id) throws Exception {
+        Servico serv = new Servico();
+
+        Optional <Servico> servicoOpt = servicoDao.findById(id);
+
+        if (servicoOpt.isPresent() ) {
+            serv = servicoOpt.get();
+            serv.setDescricao(servicoDTO.getDescricao());
+            servicoDao.save(serv);
+        } else {
+            log.info("Not found");
+            throw new Exception("Not Found");
+
+        }
+        return ServicoMapper.instance.servicoToServicoDTO(serv);
+    }
+
+    public ServicoDTO buscarPorCodigo (String codigo) {
+        return ServicoMapper.instance.servicoToServicoDTO(servicoDao.findByCodigo(codigo));
     }
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +30,8 @@ public class ProdutoService {
         return produtoDAO.save(ProdutoMapper.instance.produtoDtoToProduto(produtoDTO));
     }
 
-    public void deletar (ProdutoDTO produtoDTO) {
-        buscarDescricao(produtoDTO).stream().forEach(prod -> produtoDAO.delete(prod));
+    public void deletar (Long id) {
+        produtoDAO.deleteById(id);
     }
 
     public List<Produto> buscarDescricao (ProdutoDTO produtoDTO) {
@@ -38,7 +39,29 @@ public class ProdutoService {
 
     }
 
-    public Produto atualizar () {
-        return null;
+    public ProdutoDTO atualizar (ProdutoDTO produtoDTO, Long id) throws Exception {
+        Produto prod = new Produto();
+
+        Optional <Produto> produtoOpt = produtoDAO.findById(id);
+
+        if (produtoOpt.isPresent() ) {
+            prod = produtoOpt.get();
+            prod.setDescricao(produtoDTO.getDescricao());
+            produtoDAO.save(prod);
+        } else {
+            log.info("Not found");
+            throw new Exception("Not Found");
+
+        }
+        return ProdutoMapper.instance.produtoToProdutoDTO(prod);
     }
+
+    public List<ProdutoDTO> buscarProdutoDescricaoValor(ProdutoDTO produtoDTO) {
+        return ProdutoMapper.instance.listProdutoToProdutoDTO(produtoDAO.findByDescricaoAndValorGreaterThan(produtoDTO.getDescricao(), produtoDTO.getValor()));
+    }
+
+    public ProdutoDTO buscarPorCodigo (String codigo) {
+        return ProdutoMapper.instance.produtoToProdutoDTO(produtoDAO.findByCodigo(codigo));
+    }
+
 }

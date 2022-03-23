@@ -15,6 +15,7 @@ public class ProdutoDTO {
     private long id;
     private String descricao;
     private BigDecimal valor;
+    private String codigo;
 
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;

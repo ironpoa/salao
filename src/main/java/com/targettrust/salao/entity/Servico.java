@@ -29,6 +29,10 @@ public class Servico {
     @Column(name = "VALOR")
     private BigDecimal valor;
 
+    @NotNull
+    @Column(name = "CODIGO", unique = true)
+    private String codigo;
+
     @CreatedDate
     @Column(name = "DATA_CRIACAO")
     private LocalDateTime dataCriacao;

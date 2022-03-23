@@ -12,8 +12,8 @@ public interface ServicoMapper {
 
     ServicoMapper instance = Mappers.getMapper(ServicoMapper.class);
 
-    Servico ServicoDtoToServico (ServicoDTO ServicoDTO);
-    ServicoDTO ServicoToServicoDTO (Servico Servico);
+    Servico servicoDtoToServico (ServicoDTO servicoDTO);
+    ServicoDTO servicoToServicoDTO (Servico servico);
     List<ServicoDTO> listServicoToServicoDTO(List<Servico> servicos);
     List<Servico> listServicoDtoToServicoDTO(List<ServicoDTO> ServicoDTO);
 }
